@@ -1,4 +1,4 @@
-name: Lint test
+name: Helm Linter
 
 on:
   workflow_dispatch:
