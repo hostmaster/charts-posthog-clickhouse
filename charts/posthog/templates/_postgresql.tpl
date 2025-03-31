@@ -5,7 +5,7 @@
 - name: POSTHOG_POSTGRES_HOST
   value: {{ template "posthog.postgresql.host" . }}
 - name: POSTHOG_POSTGRES_PORT
-  value: {{ include "posthog.pgbouncer.port" . | quote }}
+  value: {{ include "posthog.postgresql.port" . | quote }}
 - name: POSTHOG_DB_USER
   value: {{ include "posthog.postgresql.username" . }}
 - name: POSTHOG_DB_NAME
