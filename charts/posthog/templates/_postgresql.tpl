@@ -3,7 +3,7 @@
 {{/* ENV used by posthog deployments for connecting to postgresql */}}
 {{- define "snippet.postgresql-env" }}
 - name: POSTHOG_POSTGRES_HOST
-  value: {{ template "posthog.pgbouncer.host" . }}
+  value: {{ template "posthog.postgresql.host" . }}
 - name: POSTHOG_POSTGRES_PORT
   value: {{ include "posthog.pgbouncer.port" . | quote }}
 - name: POSTHOG_DB_USER
@@ -16,7 +16,7 @@
       name: {{ include "posthog.postgresql.secretName" . }}
       key: {{ include "posthog.postgresql.secretPasswordKey" . }}
 - name: USING_PGBOUNCER
-  value: 'true'
+  value: 'false'
 {{ if .Values.pgbouncerRead.enabled -}}
 - name: POSTHOG_POSTGRES_READ_HOST
   value: {{ template "posthog.pgbouncer-read.host" . }}
