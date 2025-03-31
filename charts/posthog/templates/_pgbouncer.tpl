@@ -22,7 +22,7 @@ Set PgBouncer host
 Set PgBouncer port
 */}}
 {{- define "posthog.pgbouncer.port" -}}
-    6543
+    5432
 {{- end -}}
 
 {{/*
@@ -36,5 +36,5 @@ Set Read PgBouncer host
 Set PgBouncer port
 */}}
 {{- define "posthog.pgbouncer-read.port" -}}
-    6543
+    5432
 {{- end -}}
