@@ -9,13 +9,13 @@
     - >
         until (python manage.py migrate --check);
         do
-            echo "Waiting for PostgreSQL database migrations to be completed"; sleep 1;
+            echo "Waiting for PostgreSQL database migrations to be completed"; sleep 30;
         done
 
         until (python manage.py migrate_clickhouse --check);
         do
             echo "Waiting for ClickHouse database migrations to be completed";
-            sleep 1;
+            sleep 30;
         done
   env:
 
