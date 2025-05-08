@@ -92,7 +92,7 @@ spec:
           - --with-scheduler
         ports:
         - containerPort: {{ $.Values.service.internalPort }}
-        # Expose the port on which Prometheus /metrics endpoint resides
+        # Expose the port on which Prometheus /metrics endpoint resides
         - containerPort: 8001
         env:
         # Kafka env variables
@@ -151,6 +151,5 @@ spec:
         {{- end }}
       initContainers:
       {{- include "_snippet-initContainers-wait-for-service-dependencies" $ | indent 8 }}
-      {{- include "_snippet-initContainers-wait-for-migrations" $ | indent 8 }}
 {{- end }}
 {{- end }}

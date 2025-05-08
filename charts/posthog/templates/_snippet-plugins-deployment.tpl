@@ -88,7 +88,7 @@ spec:
       {{- if .params.volumes }}
       volumes:
         {{- toYaml .params.volumes | nindent 10 }}
-      {{- end }}      
+      {{- end }}
 
       containers:
       - name: {{ .root.Chart.Name }}-{{ .name }}
@@ -141,7 +141,7 @@ spec:
         livenessProbe:
           exec:
             command:
-              # Just check that we can at least exec to the container
+              # Just check that we can at least exec to the container
               - "true"
           failureThreshold: {{ .params.livenessProbe.failureThreshold }}
           initialDelaySeconds: {{ .params.livenessProbe.initialDelaySeconds }}
@@ -170,7 +170,6 @@ spec:
         {{- end }}
       initContainers:
       {{- include "_snippet-initContainers-wait-for-service-dependencies" .root | indent 8 }}
-      {{- include "_snippet-initContainers-wait-for-migrations" .root | indent 8 }}
 
 ---
 
@@ -196,7 +195,7 @@ spec:
         type: Utilization
         averageUtilization: {{ . }}
   {{- end }}
-  behavior: 
+  behavior:
     {{ toYaml .params.hpa.behavior | nindent 4 }}
 {{- end }}
 
