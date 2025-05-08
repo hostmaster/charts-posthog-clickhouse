@@ -85,7 +85,7 @@ spec:
         command:
         - ./bin/temporal-django-worker
         env:
-        # Common Configs 
+        # Common Configs
         {{- include "snippet.temporal-env" . | indent 8 }}
         {{- include "snippet.kafka-env" . | indent 8 }}
         {{- include "snippet.objectstorage-env" . | indent 8 }}
@@ -123,5 +123,4 @@ spec:
         {{- end }}
       initContainers:
       {{- include "_snippet-initContainers-wait-for-service-dependencies" . | indent 8 }}
-      {{- include "_snippet-initContainers-wait-for-migrations" . | indent 8 }}
 {{- end }}

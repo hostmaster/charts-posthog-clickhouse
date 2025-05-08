@@ -117,7 +117,7 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
-        # Expose the port on which Prometheus /metrics endpoint resides
+        # Expose the port on which Prometheus /metrics endpoint resides
         - containerPort: 8001
         env:
         # Kafka env variables
@@ -207,7 +207,7 @@ spec:
         startupProbe:
           httpGet:
             # For startup, we want to make sure that everything is in place,
-            # including postgres. This does however mean we would not be able to
+            # including postgres. This does however mean we would not be able to
             # deploy new releases when we have a postgres outage
             path: /_readyz
             port: {{ .Values.service.internalPort }}
@@ -224,5 +224,4 @@ spec:
         {{- end }}
       initContainers:
       {{- include "_snippet-initContainers-wait-for-service-dependencies" . | indent 8 }}
-      {{- include "_snippet-initContainers-wait-for-migrations" . | indent 8 }}
 {{- end }}
