@@ -170,6 +170,5 @@ spec:
         {{- if .Values.decide.securityContext.enabled }}
         securityContext: {{- omit .Values.decide.securityContext "enabled" | toYaml | nindent 12 }}
         {{- end }}
-      initContainers:
-      {{- include "_snippet-initContainers-wait-for-service-dependencies" . | indent 8 }}
+      {{- /* Remove wait-for-service-dependencies */ -}}
 {{- end }}

@@ -30,29 +30,6 @@ spec:
             {{- end }}
           {{- end }}
 
-          initContainers:
-            #
-            # Unfortunately we can't reuse the snippet _snippet-initContainers-wait-for-service-dependencies
-            # as it includes pgbouncer by default.
-            #
-            # TODO: once we'll have a better story for pgbouncer we will likely be able to remove
-            # this code duplication.
-            #
-            - name: wait-for-service-dependencies
-              image: {{ .Values.busybox.image }}
-              imagePullPolicy: {{ .Values.busybox.pullPolicy }}
-              env: {{- include "snippet.clickhouse-env" . | nindent 16 }}
-              command:
-                - /bin/sh
-                - -c
-                - |
-                  until (
-                      wget -qO- \
-                          "http://$CLICKHOUSE_USER:$CLICKHOUSE_PASSWORD@clickhouse-posthog.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local:8123" \
-                          --post-data "SELECT count() FROM clusterAllReplicas('posthog', system, one)"
-                  ); do
-                      echo "waiting for ClickHouse cluster to become available"; sleep 1;
-                  done
           containers:
             - name: run-backup-cron
               image: {{ template "client.clickhouse.image" . }}
