@@ -112,6 +112,7 @@ spec:
         {{- end }}
         {{ else }}
         command:
+          -./bin/migrate
           - ./bin/docker-server
         {{ end }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
