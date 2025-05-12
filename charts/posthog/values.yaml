@@ -137,7 +137,7 @@ recordings:
 capture:
   ingress:
     enabled: false
-    service: 
+    service:
       name: capture
       port: 3000
 
@@ -1338,13 +1338,6 @@ ingress:
   type:
   # -- URL to address your PostHog installation. You will need to set up DNS after installation
   hostname:
-  gcp:
-    # -- Specifies the name of the global IP address resource to be associated with the google clb
-    ip_name: "posthog"
-    # -- If true, will force a https redirect when accessed over http
-    forceHttps: true
-    # -- Specifies the name of the tls secret to be used by the ingress. If not specified a managed certificate will be generated.
-    secretName: ""
   # -- Whether to enable letsencrypt. Defaults to true if hostname is defined and nginx and cert-manager are enabled otherwise false.
   letsencrypt:
   nginx:
@@ -1459,8 +1452,8 @@ externalPostgresql:
 ###
 ###
 
-_pgbouncer: &_pgbouncer 
-# -- Whether to deploy a PgBouncer service to satisfy the applications requirements.
+_pgbouncer:
+  &_pgbouncer # -- Whether to deploy a PgBouncer service to satisfy the applications requirements.
   enabled: true
 
   exporter:
@@ -1661,12 +1654,12 @@ externalRedis:
   # -- Name of the key pointing to the password in your Kubernetes secret.
   existingSecretPasswordKey: ""
 
-externalSessionRecordingRedis: {}
+externalSessionRecordingRedis:
+  {}
   # -- External Redis host to use.
   # host: ""
   # -- External Redis port to use.
   # port: 6379
-
 
 ###
 ###

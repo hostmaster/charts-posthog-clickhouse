@@ -8,42 +8,33 @@ metadata:
     {{- if (eq (include "ingress.type" .) "nginx") }}
     kubernetes.io/ingress.class: "nginx"
     {{- end }}
-    {{- if (eq (include "ingress.type" .) "clb") }}
-    kubernetes.io/ingress.class: "gce"
-    {{- if not (.Values.ingress.gcp.secretName) }}
-    networking.gke.io/managed-certificates: "{{ .Release.Name }}-gke-cert"
+    {{- if (eq (include "ingress.type" .) "alb") }}
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    alb.ingress.kubernetes.io/healthcheck-path: /_health
+    alb.ingress.kubernetes.io/success-codes: '200'
+    alb.ingress.kubernetes.io/healthy-threshold-count: '2'
+    alb.ingress.kubernetes.io/unhealthy-threshold-count: '2'
     {{- end }}
-    networking.gke.io/v1beta1.FrontendConfig: "{{ .Release.Name }}-frontend-config"
-    {{- if .Values.ingress.gcp.ip_name }}
-    kubernetes.io/ingress.global-static-ip-name: {{ .Values.ingress.gcp.ip_name | quote }}
-    {{- end }}
-   {{- end }}
-   {{- if (and (eq (include "ingress.type" .) "nginx") .Values.ingress.nginx.redirectToTLS "true") }}
+    {{- if (and (eq (include "ingress.type" .) "nginx") .Values.ingress.nginx.redirectToTLS "true") }}
     nginx.ingress.kubernetes.io/configuration-snippet: |
       more_set_headers "Strict-Transport-Security: max-age=30; includeSubDomains";
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-   {{- if eq (include "ingress.letsencrypt" .) "true"}}
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-   {{- end }}
-   {{- end }}
-   {{- if .Values.ingress.annotations }}
+    {{- end }}
+    {{- if .Values.ingress.annotations }}
     {{- range $key, $value := .Values.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
-   {{- end }}
+    {{- end }}
 spec:
-  {{- if or (eq (include "ingress.letsencrypt" .) "true") (or (.Values.ingress.secretName) (.Values.ingress.gcp.secretName)) }}
+  {{- if .Values.ingress.secretName }}
   tls:
   - hosts:
     - {{ .Values.ingress.hostname }}
-    {{- if .Values.ingress.secretName }}
     secretName: {{ .Values.ingress.secretName }}
-    {{- else if eq (include "ingress.letsencrypt" .) "true" }}
-    secretName: nginx-letsencrypt-{{ template "posthog.fullname" . }}
-    {{- else }}
-    secretName: {{ .Values.ingress.gcp.secretName }}
-    {{- end }}
   {{- end }}
   rules:
   {{- if .Values.ingress.hostname }}
@@ -53,47 +44,20 @@ spec:
     - http:
   {{- end }}
         paths:
-          {{- if (ne (include "ingress.type" .) "clb") }}
           - pathType: Prefix
             path: "/"
-          {{- else }}
-          - pathType: ImplementationSpecific
-            path: "/*"
-          {{- end }}
             backend:
               service:
                 name: {{ template "posthog.fullname" . }}-web
                 port:
                   number: {{ .Values.service.externalPort }}
-          {{- if (ne (include "ingress.type" .) "clb") }}
           - pathType: Prefix
             path: "/batch"
-          {{- else }}
-          - pathType: ImplementationSpecific
-            path: "/batch/*"
-          {{- end }}
             backend: &INGESTION
               service:
                 name: {{ template "posthog.fullname" . }}-events
                 port:
                   number: {{ .Values.service.externalPort }}
-          {{- if (ne (include "ingress.type" .) "clb") }}
-          # Match any url with a prefix ending with a forward-slash. Previously
-          # we would match without the forward-slash. To ensure that we pick up
-          # with the forward-slash omitted we also match Exact. Note that we
-          # could use e.g. [ingress-nginx regex support](https://kubernetes.github.io/ingress-nginx/user-guide/ingress-path-matching/#regular-expression-support)
-          # but to keep this agnostic we use a combination of Prefix and Exact.
-          #
-          # NOTE: we still use a Prefix match on paths with a forward-slash,
-          # just in case there are cases that we have subpaths for these
-          # endpoints that still need to be passed to the `posthog-events` pods.
-          - pathType: Prefix
-            path: "/capture/"
-            backend: *INGESTION
-          - pathType: Exact
-            path: "/capture"
-            backend: *INGESTION
-
           {{- if .Values.capture.ingress.enabled}}
           - pathType: Prefix
             path: "/i/"

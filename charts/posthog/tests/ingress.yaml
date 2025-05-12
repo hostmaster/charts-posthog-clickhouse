@@ -77,7 +77,6 @@ tests:
               more_set_headers "Strict-Transport-Security: max-age=30; includeSubDomains";
             nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
             nginx.ingress.kubernetes.io/ssl-redirect: "true"
-            cert-manager.io/cluster-issuer: "letsencrypt-prod"
 
   - it: DO - 'metadata.annotations' should match the default values
     set:
@@ -101,45 +100,6 @@ tests:
               more_set_headers "Strict-Transport-Security: max-age=30; includeSubDomains";
             nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
             nginx.ingress.kubernetes.io/ssl-redirect: "true"
-            cert-manager.io/cluster-issuer: "letsencrypt-prod"
-
-  - it: GCP - 'metadata.annotations' should match the default values
-    set:
-      cloud: "gcp"
-      ingress:
-        hostname: <your-hostname>
-    asserts:
-      - hasDocuments:
-          count: 1
-      - equal:
-          path: metadata.annotations
-          value:
-            meta.helm.sh/release-name: RELEASE-NAME
-            meta.helm.sh/release-namespace: NAMESPACE
-            kubernetes.io/ingress.class: gce
-            kubernetes.io/ingress.global-static-ip-name: posthog
-            networking.gke.io/managed-certificates: RELEASE-NAME-gke-cert
-            networking.gke.io/v1beta1.FrontendConfig: RELEASE-NAME-frontend-config
-
-  - it: GCP - 'metadata.annotations' the ingress.gcp.ip_name override should work
-    set:
-      cloud: "gcp"
-      ingress:
-        hostname: <your-hostname>
-        gcp:
-          ip_name: ip_custom_name
-    asserts:
-      - hasDocuments:
-          count: 1
-      - equal:
-          path: metadata.annotations
-          value:
-            meta.helm.sh/release-name: RELEASE-NAME
-            meta.helm.sh/release-namespace: NAMESPACE
-            kubernetes.io/ingress.class: gce
-            kubernetes.io/ingress.global-static-ip-name: ip_custom_name
-            networking.gke.io/managed-certificates: RELEASE-NAME-gke-cert
-            networking.gke.io/v1beta1.FrontendConfig: RELEASE-NAME-frontend-config
 
   - it: NGINX - 'metadata.annotations' should match the default values
     set:
@@ -175,7 +135,6 @@ tests:
               more_set_headers "Strict-Transport-Security: max-age=30; includeSubDomains";
             nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
             nginx.ingress.kubernetes.io/ssl-redirect: "true"
-            cert-manager.io/cluster-issuer: "letsencrypt-prod"
 
   - it: overrides to 'metadata.annotations' via 'ingress.annotations' should work
     set:
@@ -197,7 +156,7 @@ tests:
     set:
       ingress:
         enabled: true
-        hostname: ''
+        hostname: ""
     asserts:
       - isNull:
           path: spec.rules[0].host
