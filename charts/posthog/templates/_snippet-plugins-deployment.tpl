@@ -114,6 +114,12 @@ spec:
         - name: SENTRY_DSN
           value: {{ .params.sentryDSN | default .root.Values.sentryDSN }}
 
+        # Add environment variables for request handling
+        - name: PLUGIN_SERVER_HTTP_TIMEOUT
+          value: "3600"
+        - name: PLUGIN_SERVER_MAX_REQUEST_SIZE
+          value: "50m"
+
         # Kafka env variables
         {{- include "snippet.kafka-env" .root | nindent 8 }}
 
