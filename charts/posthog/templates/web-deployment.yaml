@@ -112,8 +112,15 @@ spec:
         {{- end }}
         {{ else }}
         command:
-          -./bin/migrate
-          - ./bin/docker-server
+        - /bin/sh
+        - -c
+        - |
+          set -x
+          echo "Starting PostHog web deployment..."
+          echo "Running migrations..."
+          ./bin/migrate
+          echo "Starting web server..."
+          ./bin/docker-server
         {{ end }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
