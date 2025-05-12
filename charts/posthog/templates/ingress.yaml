@@ -3,9 +3,9 @@
   pathType: Prefix
   backend:
     service:
-      name: {{ .Values.ingress.serviceName | default (include "posthog.fullname" .) }}
+      name: {{ template "posthog.fullname" . }}-web
       port:
-        number: {{ .Values.ingress.servicePort | default 8000 }}
+        number: {{ .Values.service.externalPort }}
 {{- end -}}
 
 {{- if .Values.ingress.enabled -}}
