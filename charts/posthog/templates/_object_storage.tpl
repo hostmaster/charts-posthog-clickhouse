@@ -61,20 +61,14 @@ https://{{- .Values.externalObjectStorage.host -}}:{{- .Values.externalObjectSto
 - name: OBJECT_STORAGE_ENABLED
   value: "true"
 - name: OBJECT_STORAGE_ENDPOINT
-  value: {{ include "posthog.externalObjectStorage.endpoint" . }}
+  value: 'None'
 - name: OBJECT_STORAGE_BUCKET
   value: {{ .Values.externalObjectStorage.bucket }}
 - name: OBJECT_STORAGE_REGION
   value: {{ .Values.externalObjectStorage.region }}
 - name: OBJECT_STORAGE_ACCESS_KEY_ID
-  valueFrom:
-    secretKeyRef:
-      name: {{ .Values.externalObjectStorage.existingSecret }}
-      key: 'root-user'
+  value: 'None'
 - name: OBJECT_STORAGE_SECRET_ACCESS_KEY
-  valueFrom:
-    secretKeyRef:
-      name: {{ .Values.externalObjectStorage.existingSecret }}
-      key: 'root-password'
+  value: 'None'
 {{- end }}
 {{- end }}
