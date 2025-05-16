@@ -61,7 +61,7 @@ https://{{- .Values.externalObjectStorage.host -}}:{{- .Values.externalObjectSto
 - name: OBJECT_STORAGE_ENABLED
   value: "true"
 - name: OBJECT_STORAGE_ENDPOINT
-  value: 'None'
+  value: {{ include "posthog.externalObjectStorage.endpoint" . }}
 - name: OBJECT_STORAGE_BUCKET
   value: {{ .Values.externalObjectStorage.bucket }}
 - name: OBJECT_STORAGE_REGION
